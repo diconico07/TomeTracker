@@ -62,6 +62,7 @@ func main() {
 	tomeStore.DefineRoutes(api, svc, bookSvc)
 
 	router.Static("/assets", "./dist/assets")
+	router.Static("/static", "./dist/static")
 	router.StaticFile("/manifest.webmanifest", "./dist/manifest.webmanifest")
 	router.GET("/sw.js", func(c *gin.Context) {
 		// Prevent the browser from caching the SW file.

@@ -24,7 +24,7 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['assets/favicon.ico', 'assets/apple-touch-icon.png'],
+      includeAssets: ['static/favicon.ico', 'static/apple-touch-icon.png'],
       manifest: {
         name: 'My Vuetify PWA',
         short_name: 'VuetifyPWA',
@@ -32,12 +32,12 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'assets/pwa-192x192.png',
+            src: 'static/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'assets/pwa-512x512.png',
+            src: 'static/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           }
@@ -65,7 +65,7 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
-  }
+  },
   // --- END CONFIGURATION FOR GIN INTEGRATION ---
 })
 
