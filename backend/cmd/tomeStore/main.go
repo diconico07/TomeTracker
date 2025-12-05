@@ -62,6 +62,16 @@ func main() {
 	tomeStore.DefineRoutes(api, svc, bookSvc)
 
 	router.Static("/assets", "./dist/assets")
+	router.GET("/sw.js", func(c *gin.Context) {
+		// Prevent the browser from caching the SW file.
+		// This ensures the browser always checks the server for a new version.
+		c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+		c.Header("Pragma", "no-cache")
+		c.Header("Expires", "0")
+
+		// Serve the file from the embedded filesystem
+		c.File("./dist/sw.js")
+	})
 	router.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.RequestURI, "/assets") {
 			c.Status(http.StatusNotFound)

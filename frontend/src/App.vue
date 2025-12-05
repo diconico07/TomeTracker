@@ -2,6 +2,15 @@
 import { RouterView } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import logo from '@/assets/logo.svg'
+import { useRegisterSW } from 'virtual:pwa-register/vue'
+
+const { needRefresh, updateServiceWorker } = useRegisterSW()
+
+const updateAvailable = needRefresh // Reactive ref from the plugin
+
+const refreshApp = () => {
+  updateServiceWorker(true)
+}
 
 // 1. Destructure 'mobile' from useDisplay to detect screen size
 // 'mobile' returns true if the screen is 'xs' (phones) or 'sm' (small tablets)
@@ -46,6 +55,23 @@ const items = [
     <v-main>
       <RouterView />
     </v-main>
+    <v-snackbar
+      v-model="updateAvailable"
+      color="info"
+      vertical
+      timeout="-1" 
+    >
+      New content is available. Refresh to update.
+      
+      <template v-slot:actions>
+        <v-btn text @click="refreshApp">
+          Refresh
+        </v-btn>
+        <v-btn text @click="updateAvailable = false">
+          Dismiss
+        </v-btn>
+      </template>
+    </v-snackbar>
 
     <v-bottom-navigation
       v-if="mobile"
