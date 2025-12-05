@@ -24,7 +24,7 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['assets/favicon.ico', 'assets/apple-touch-icon.png'],
       manifest: {
         name: 'My Vuetify PWA',
         short_name: 'VuetifyPWA',
@@ -32,12 +32,12 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'assets/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'assets/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           }
