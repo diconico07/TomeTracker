@@ -24,7 +24,10 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['static/favicon.ico', 'static/apple-touch-icon.png'],
+      includeAssets: ['static/favicon.ico', 'static/apple-touch-icon.png', 'static/maskable-icon-512x512.png'],
+      workbox: {
+        inlineWorkboxRuntime: true
+      },
       manifest: {
         name: 'My Vuetify PWA',
         short_name: 'VuetifyPWA',
