@@ -1,6 +1,6 @@
 module github.com/diconico07/TomeTracker
 
-go 1.25.4
+go 1.25.3
 
 require resty.dev/v3 v3.0.0-beta.4
 
