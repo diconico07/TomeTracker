@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mariadb.fullname" . }}
+  labels:
+    {{- include "mariadb.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "mariadb.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mariadb.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: mariadb
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.mariadbSecretName }}
+                  key: password
+            - name: MARIADB_DATABASE
+              value: "tometracker"
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: mysql
+          readinessProbe:
+            tcpSocket:
+              port: mysql
+          volumeMounts:
+            - name: mariadb-persistent-storage
+              mountPath: /var/lib/mysql
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: mariadb-persistent-storage
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "mariadb.fullname" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

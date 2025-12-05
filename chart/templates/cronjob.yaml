@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "chart.fullname" . }}-yenpressfetcher
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "chart.labels" . | nindent 12 }}
+            {{- with .Values.podLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+        spec:
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: OnFailure
+          containers:
+            - name: yenpressfetcher
+              image: "{{ .Values.yenpressFetcherImage.repository }}:{{ .Values.yenpressFetcherImage.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.yenpressFetcherImage.pullPolicy }}
+              {{- with .Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 17 }}
+              {{- end }}
+              env:
+                - name: BASE_URL
+                  value: "http://{{ include "chart.fullname" . }}"
