@@ -1,5 +1,9 @@
 <template>
-  <v-card class="mx-auto" :title="title" :subtitle="'Released: ' + date.format(released_at, 'fullDate')">
+  <v-card class="mx-auto" :title="title">
+    <template v-slot:subtitle>
+      <v-chip density="compact" prepend-icon="mdi-calendar">{{ date.format(released_at, 'fullDate') }}</v-chip>
+      <v-chip density="compact" class="ml-1" prepend-icon="mdi-book" v-if="mobile">{{ props.tome_number }}</v-chip>
+    </template>
     <template v-slot:prepend>
       <v-img
         class="mx-auto"
@@ -9,9 +13,10 @@
         width="125"
       ></v-img>
     </template>
-    <template v-slot:append>
+
+    <template v-slot:append v-if="!mobile">
       <v-btn
-        :key="`info-${owned}`"
+        :key="`info-${owned}-wide`"
         :color="owned ? 'success' : 'primary'"
         :prepend-icon="owned ? 'mdi-check' : 'mdi-plus'"
         :text="owned ? 'Owned' : 'Add'"
@@ -19,7 +24,18 @@
         :loading="isLoading"
       ></v-btn>
     </template>
-    <v-card-text> </v-card-text>
+    <template v-if="mobile">
+      <v-card-actions>
+        <v-btn
+        :key="`info-${owned}`"
+        :color="owned ? 'success' : 'primary'"
+        :prepend-icon="owned ? 'mdi-check' : 'mdi-plus'"
+        :text="owned ? 'Owned' : 'Add'"
+        @click="handleButtonClick"
+        :loading="isLoading"
+      ></v-btn>
+      </v-card-actions>
+    </template>
   </v-card>
   <v-dialog v-model="isDialogOpen" max-width="500">
     <v-card>
@@ -39,7 +55,7 @@ import missing from '@/assets/missing.webp'
 const props = defineProps(['title', 'owned', 'cover', 'isbn', 'released_at', 'tome_number'])
 import axios from 'axios'
 import { useDate } from 'vuetify'
-
+import { useDisplay } from 'vuetify'
 import { ref } from 'vue'
 
 // --- State ---
@@ -48,7 +64,7 @@ const isDialogOpen = ref(false)
 const isLoading = ref(false)
 const owned = ref(props.owned)
 const date = useDate()
-
+const { mobile } = useDisplay()
 
 // --- Logic ---
 
